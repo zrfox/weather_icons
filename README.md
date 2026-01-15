@@ -1,4 +1,12 @@
-# Weather Icons
+## To Run
+
+
+__Development Build:__ 
+Double-click run_dev.bat or run the commands:  
+    pip install -r requirements-dev.txt
+    run_dev.bat
+
+## Weather Icons
 
 This is a small app made to create weather icons in the form of svg files based on input
 through [ZeroMQ](https://zeromq.org/).

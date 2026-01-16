@@ -93,12 +93,12 @@ def combine_weather(weather):
 def generate_icons(new_weather):
     time, main_weather, secondary_weather = new_weather["time"], new_weather["main_weather"], new_weather[
         "secondary_weather"]
-    print("WWWWWWWWWWWWWWWWWWWWWWWWW \n")
     fig = sg.SVGFigure("1cm", "1cm") #changed from "5in" #idk if this is doing much
+    
     time_fig = sg.fromfile(f"./icons/{time}.svg").getroot()
-    #time_fig.moveto(120, -50)  # Move over to the top right, so it can peek out from behind main
-    if secondary_weather != 0:
-        fig.append([time_fig])
+    if main_weather != "clear":
+        time_fig.moveto(120, -50)  # Move over to the top right, so it can peek out from behind main
+    fig.append([time_fig])
     # May sometimes be None
     if secondary_weather:
         secondary_fig = sg.fromfile(f"./icons/{secondary_weather}.svg").getroot()

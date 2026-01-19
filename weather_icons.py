@@ -91,25 +91,41 @@ def combine_weather(weather):
 
 
 def generate_icons(new_weather):
-    time, main_weather, secondary_weather = new_weather["time"], new_weather["main_weather"], new_weather[
-        "secondary_weather"]
-    fig = sg.SVGFigure("1cm", "1cm") #changed from "5in" #idk if this is doing much
+    time, main_weather, secondary_weather = new_weather["time"], new_weather["main_weather"], new_weather["secondary_weather"]
     
-    time_fig = sg.fromfile(f"./icons/{time}.svg").getroot()
-    if main_weather != "clear":
-        time_fig.moveto(120, -50)  # Move over to the top right, so it can peek out from behind main
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    icons_dir = os.path.join(script_dir, "icons")
+    
+    fig = sg.SVGFigure(width="600px", height="600px")
+    
+    time_fig = sg.fromfile(os.path.join(icons_dir, f"{time}.svg")).getroot()
+
     fig.append([time_fig])
-    # May sometimes be None
+    
     if secondary_weather:
-        secondary_fig = sg.fromfile(f"./icons/{secondary_weather}.svg").getroot()
-        if secondary_weather != 0:
-            secondary_fig.moveto(0, 200)  # Needs to be overlapping slightly with main
+        secondary_fig = sg.fromfile(os.path.join(icons_dir, f"{secondary_weather}.svg")).getroot()
+        secondary_fig.moveto(-10, 190)
         fig.append([secondary_fig])
-    # Clear doesn't need an icon
+    
     if main_weather != "clear":
-        main_fig = sg.fromfile(f"./icons/{main_weather}.svg").getroot() #was "./weather_icons/icons/{main_weather}.svg"
+        main_fig = sg.fromfile(os.path.join(icons_dir, f"{main_weather}.svg")).getroot()
         fig.append([main_fig])
-    return fig.to_str()
+        time_fig.moveto(190, -10)
+
+    
+    svg_bytes = fig.to_str()
+    
+    # Decode bytes to string
+    svg_string = svg_bytes.decode('utf-8')
+    
+    # Add viewBox to crop the empty space
+    svg_string = svg_string.replace(
+        '<svg',
+        '<svg viewBox="30 150 700 300"'
+    )
+    
+    # Encode back to bytes for websocket
+    return svg_string.encode('utf-8')
 
 
 if __name__ == "__main__":
